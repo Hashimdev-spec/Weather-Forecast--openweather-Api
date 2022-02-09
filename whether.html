@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100 Days of code : Project 1 </title>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> 
+</head>
+     <style>
+          * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+ }
+
+ body {
+     height: 100vh;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     flex-direction: column;
+     background-image: url(./svg/4.jpg);
+     background-repeat: no-repeat;
+     background-size: cover;
+     font-family: sans-serif;
+     color: white;
+ }
+
+ .Location,
+ .temperature {
+     height: 30vh;
+     width: 50%;
+     display: flex;
+     justify-content: space-around;
+     align-items: center;
+     flex-direction: column;
+ }
+
+ .Location {
+     gap: 15px;
+ }
+
+ .degree-section {
+     display: flex;
+     align-items: center;
+ }
+
+ .degree-section span {
+     margin: 10px;
+     font-size: 30px;
+ }
+
+ .theme-icons {
+     width: 100%;
+     height: 50px;
+     background: transparent;
+     position: absolute;
+     top: 29px;
+ }
+
+ #moon {
+     margin-left: 90%;
+     font-size: 30px;
+ }
+
+ #sun {
+     margin-left: 90%;
+     font-size: 30px;
+ }
+
+ .hide {
+     display: none;
+ }
+
+ .show {
+     display: block;
+ }
+     </style>
+<body>
+
+
+    <div class="theme-icons">
+    <i id="moon" class="fa fa-moon hide"></i>
+     <i id="sun" class="fa fa-sun"></i>
+     </div>
+
+
+   <div class="Location">
+    <h1 id="Location-timezone">Timezone</h1>
+   <canvas id="icon1" width="128" height="128"></canvas>
+     </div>
+
+     <div class="temperature">
+    <div class="degree-section">
+    <h1 id="temperature-degree">3</h1>
+    <span>C</span>
+    </div>
+    <h2 id="temperature-description">it's friggin cold</h2>
+         </div>
+ 
+   
+<script>
+
+  const moon = document.getElementById('moon');
+  const sun = document.getElementById('sun');
+
+  sun.addEventListener('click',() =>{
+      moon.classList.remove('hide');
+      sun.classList.add('hide');
+
+  })
+  moon.addEventListener('click',() =>{
+      sun.classList.remove('hide');
+      moon.classList.add('hide');
+  
+    }
+
+  );
+
+// initiate request on page reload or refresh
+
+window.addEventListener('load',() =>{
+
+ if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(position =>{
+
+       //getting the latitude and longitude from the users browser  
+
+          const lat = position.coords.latitude;
+          const long = position.coords.longitude;
+          const Api_key = '02c46eeb278725e2181a7a8dd44e455b';
+
+          // assigning the latitude and longitude value to the openweather api
+
+          const api =`http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${long}&limit=5&appid=${Api_key}`;
+
+   //fetch the Api from openweather.org       
+      fetch(api)
+        .then(function (response){
+            return response.json();
+        })
+         .then(function (data){
+             
+             const locationn = document.getElementById('Location-timezone');
+          
+              locationn.innerHTML = data[0].country;
+
+//another instance of fetching the Api from openweather.org  
+// getting the city from open weather api and assigning it dynamically to the api
+       const city = data[0].state;
+       const apiweatherkey='02c46eeb278725e2181a7a8dd44e455b';
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=` + apiweatherkey)
+        .then(function (response){
+            return response.json();
+        })
+         .then(function (data){
+           
+
+                const locationn = document.getElementById('Location-timezone');
+          
+              locationn.innerHTML = data.name;
+             
+             const temp = document.getElementById('temperature-degree');
+             temp.innerHTML = Math.round(parseFloat(data.main.temp)-273.15) + '&deg;';
+             const description = document.getElementById('temperature-description');
+             description.innerHTML = data.weather[0].description
+
+             const desc = data.weather[0].description
+             const icon = data.weather[0].icon;
+      
+             
+    //adding skycons svg animation to the open weather api temperature icon
+        const skycons = new Skycons({"color": "white"});
+        skycons.add(document.getElementById("icon1"), Skycons.RAIN);
+    //    skycons.set("icon1", Skycons.PARTLY_CLOUDY_NIGHT);
+       skycons.play();
+    
+         
+         })
+
+         })
+
+      });
+    
+ } 
+
+} );
+
+
+</script>
+
+<script src="./skycons.js"></script>
+
+
+</body>
+</html>
