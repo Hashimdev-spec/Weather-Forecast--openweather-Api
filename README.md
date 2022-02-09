@@ -7,8 +7,9 @@ Weather Forecast-  with openweather Api
 
 #Desktop view
 
-![image info](./desktop.png)
+<img src="./desktop.png" alt="drawing" width="400"/>
 
 #Mobile view
 
-![image info](./mobile.png)
+<img src="./mobile.png" alt="drawing" width="400"/>
+
